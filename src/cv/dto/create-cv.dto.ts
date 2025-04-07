@@ -11,11 +11,13 @@ export class CreateCvDto {
   age: number;
 
   @IsString()
-  Cin: string;
+  cin: string;
 
   @IsString()
-  Job: string;
+  job: string;
 
   @IsString()
   path: string;
+  userId?: number;       // relation 1 CV -> 1 User
+  skillIds?: number[];   // relation CV <-> Skill (many-to-many)
 }

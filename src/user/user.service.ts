@@ -12,24 +12,38 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  findAll() {
+  createUser({ username, email, password }: { username: string; email: string; password: string }): Promise<User> {
+    const user = this.userRepository.create({ username, email, password });
+    return this.userRepository.save(user);
+  }
+
+
+  create(dto: CreateUserDto): Promise<User> {
+    const user = this.userRepository.create(dto);
+    return this.userRepository.save(user);
+  }
+
+  findAll(): Promise<User[]> {
     return this.userRepository.find({ relations: ['cvs'] });
   }
 
-  create(userData: Partial<User>) {
-    const newUser = this.userRepository.create(userData);
-    return this.userRepository.save(newUser);
+  findOne(id: number): Promise<User |null> {
+    return this.userRepository.findOne({
+      where: { id },
+      relations: ['cvs'],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async update(id: number, dto: UpdateUserDto): Promise<User |null> {
+    await this.userRepository.update(id, dto);
+    return this.findOne(id);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async remove(id: number): Promise<void> {
+    await this.userRepository.delete(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  findByUsername(username: string): Promise<User |null> {
+    return this.userRepository.findOne({ where: { username } });
   }
 }

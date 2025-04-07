@@ -6,21 +6,30 @@ import { Skill } from '../../skill/entities/skill.entity';
 export class Cv {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   name: string;
+
   @Column()
-  firstName: string;
+  firstname: string;
+
   @Column()
   age: number;
+
   @Column()
-  Cin:string;
+  cin: string;
+
   @Column()
-  Job: string;
+  job: string;
+
   @Column()
-  path:string;
+  path: string;
+
   @ManyToOne(() => User, user => user.cvs)
-  user:User;
+  user: User;
+
   @ManyToMany(() => Skill)
   @JoinTable()
-  skills : Skill[];
+  skills: Skill[];
 }
+

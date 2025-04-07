@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
 import { CvService } from './cv.service';
+//import { CvController } from './cv.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/user/entities/user.entity';
+import { Skill } from 'src/skill/entities/skill.entity';
+import { Cv } from './entities/cv.entity';
+import { CvControllerV2 } from './cv.controller.v2';
 import { CvController } from './cv.controller';
+import { PaginationService } from 'src/common/services/pagination.service';
 
-@Module({
-  controllers: [CvController],
-  providers: [CvService],
+@Module({ imports: [TypeOrmModule.forFeature([Cv, Skill, User])],
+  controllers: [CvController,CvControllerV2],
+  providers: [CvService,PaginationService],
 })
 export class CvModule {}
+ 
