@@ -11,6 +11,7 @@ import {
   UploadedFile,
   Res,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -23,6 +24,8 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
+import { FileSizeValidationPipe } from './pipes/file-size-validation.pipe'; // Adjust path if needed
+import { FileExtensionValidationPipe } from './pipes/file-extension-validation.pipe';
 
 @Controller('cv')
 export class CvController {
@@ -76,6 +79,9 @@ export class CvController {
         }
         callback(null, true);
       },
+      limits: {
+        fileSize: 1 * 1024 * 1024,
+      },
     }),
   )
   async uploadImage(
@@ -126,6 +132,9 @@ export class CvController {
         }
         callback(null, true);
       },
+      limits: {
+        fileSize: 1 * 1024 * 1024,
+      },
     }),
   )
   async createWithImage(
@@ -160,6 +169,9 @@ export class CvController {
         }
         callback(null, true);
       },
+      limits: {
+        fileSize: 1 * 1024 * 1024,
+      },
     }),
   )
   async updateWithImage(
@@ -183,6 +195,35 @@ export class CvController {
       message:
         'CV mis à jour avec succès.' + (file ? ' Image mise à jour.' : ''),
       cv: updatedCv,
+    };
+  }
+  // this is another upload image using the pipes to validate the image
+  @Post(':id/upload-with-pipes')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/cv-images',
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now();
+          const ext = extname(file.originalname);
+          callback(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+    }),
+  )
+  async uploadImageWithValidation(
+    @Param('id') id: string,
+    @UploadedFile(FileSizeValidationPipe, FileExtensionValidationPipe)
+    file: Express.Multer.File,
+  ) {
+    if (!file) {
+      return { message: 'Aucune image uploadée.' };
+    }
+    const imagePath = file.path;
+    await this.cvService.updateImage(+id, imagePath);
+    return {
+      message: 'Image uploadée avec succès et validée.',
+      path: imagePath,
     };
   }
 }
