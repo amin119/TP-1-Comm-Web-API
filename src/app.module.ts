@@ -11,6 +11,9 @@ import * as dotenv from 'dotenv';
 import { Skill } from './skill/entities/skill.entity';
 import { User } from './user/entities/user.entity';
 import { Cv } from './cv/entities/cv.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 dotenv.config();
 @Module({
   imports: [
@@ -27,6 +30,10 @@ dotenv.config();
       entities: [Skill, User, Cv],
       synchronize: false,
       dropSchema: false,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/public',
     }),
   ],
   controllers: [AppController],

@@ -24,7 +24,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
-import { FileSizeValidationPipe } from './pipes/file-size-validation.pipe'; // Adjust path if needed
+import { FileSizeValidationPipe } from './pipes/file-size-validation.pipe';
 import { FileExtensionValidationPipe } from './pipes/file-extension-validation.pipe';
 
 @Controller('cv')
@@ -66,7 +66,7 @@ export class CvController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads/cv-images',
+        destination: './public/uploads',
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now();
           const ext = extname(file.originalname);
@@ -119,7 +119,7 @@ export class CvController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads/cv-images',
+        destination: './public/uploads',
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now();
           const ext = extname(file.originalname);
@@ -156,7 +156,7 @@ export class CvController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads/cv-images',
+        destination: './public/uploads',
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now();
           const ext = extname(file.originalname);
@@ -202,7 +202,7 @@ export class CvController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads/cv-images',
+        destination: './public/uploads',
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now();
           const ext = extname(file.originalname);
