@@ -7,12 +7,12 @@ export class PaginationService {
     repository: Repository<T>,
     page: number = 1,
     limit: number = 10,
-    options: any = {}
+    options: any = {},
   ) {
     const [data, total] = await repository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
-      ...options
+      ...options,
     });
 
     return {
@@ -21,7 +21,7 @@ export class PaginationService {
         total,
         page,
         last_page: Math.ceil(total / limit),
-      }
+      },
     };
   }
 }

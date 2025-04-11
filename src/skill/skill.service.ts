@@ -15,20 +15,17 @@ export class SkillService {
   findAll() {
     return this.skillRepository.find();
   }
- 
-  
+
   create(skillData: Partial<Skill>) {
     const newSkill = this.skillRepository.create(skillData);
     return this.skillRepository.save(newSkill);
   }
 
-  
-
-  findOne(id: number): Promise<Skill |null> {
+  findOne(id: number): Promise<Skill | null> {
     return this.skillRepository.findOneBy({ id });
   }
 
-  async update(id: number, dto: UpdateSkillDto): Promise<Skill |null> {
+  async update(id: number, dto: UpdateSkillDto): Promise<Skill | null> {
     await this.skillRepository.update(id, dto);
     return this.findOne(id);
   }

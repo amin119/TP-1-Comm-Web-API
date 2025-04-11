@@ -18,6 +18,6 @@ export class CreateCvDto {
 
   @IsString()
   path: string;
-  userId?: number;       // relation 1 CV -> 1 User
-  skillIds?: number[];   // relation CV <-> Skill (many-to-many)
+  userId?: number; // relation 1 CV -> 1 User
+  skillIds?: number[]; // relation CV <-> Skill (many-to-many)
 }

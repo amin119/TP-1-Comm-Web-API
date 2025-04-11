@@ -9,9 +9,9 @@ import { CvControllerV2 } from './cv.controller.v2';
 import { CvController } from './cv.controller';
 import { PaginationService } from 'src/common/services/pagination.service';
 
-@Module({ imports: [TypeOrmModule.forFeature([Cv, Skill, User])],
-  controllers: [CvController,CvControllerV2],
-  providers: [CvService,PaginationService],
+@Module({
+  imports: [TypeOrmModule.forFeature([Cv, Skill, User])],
+  controllers: [CvController, CvControllerV2],
+  providers: [CvService, PaginationService],
 })
 export class CvModule {}
- 
