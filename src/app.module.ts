@@ -6,12 +6,13 @@ import { UserModule } from './user/user.module';
 import { SkillModule } from './skill/skill.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddleware } from './common/auth.middleware';
-
 import * as dotenv from 'dotenv';
 import { Skill } from './skill/entities/skill.entity';
 import { User } from './user/entities/user.entity';
 import { Cv } from './cv/entities/cv.entity';
+import { AuthModule } from './auth/auth.module';
 dotenv.config();
+
 @Module({
   imports: [
     UserModule,
@@ -22,12 +23,16 @@ dotenv.config();
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
-      database: 'ExerciceWeb2',
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [Skill, User, Cv],
       synchronize: false,
       dropSchema: false,
     }),
+    AuthModule,
+    CvModule,
+    UserModule,
+    SkillModule,
   ],
   controllers: [AppController],
   providers: [AppService],
