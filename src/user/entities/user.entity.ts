@@ -11,6 +11,6 @@ export class User {
   email: string;
   @Column()
   password: string;
-  @OneToMany(() => Cv, cv => cv.user)
+  @OneToMany(() => Cv, (cv) => cv.user)
   cvs: Cv[];
 }

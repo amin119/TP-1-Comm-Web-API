@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Req, UseGuards, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  Req,
+  UseGuards,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CvService } from './cv.service';
 import { CreateCvDto } from './dto/create-cv.dto';
 import { Request } from 'express';
@@ -6,6 +17,15 @@ import { Request } from 'express';
 @Controller({ path: 'cv', version: '2' })
 export class CvControllerV2 {
   constructor(private readonly cvService: CvService) {}
+  @Get()
+  findAll() {
+    return this.cvService.findAllv2();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.cvService.findOnev2(+id);
+  }
 
   @Post()
   create(@Body() createCvDto: CreateCvDto, @Req() req: Request) {
@@ -13,7 +33,7 @@ export class CvControllerV2 {
       throw new UnauthorizedException('User not authenticated');
     }
     console.log('REQ USER:', req['user']);
-    return this.cvService.createv2(createCvDto, req['user'] );
+    return this.cvService.createv2(createCvDto, req['user']);
   }
 
   @Put(':id')

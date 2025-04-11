@@ -8,17 +8,20 @@ export class AuthMiddleware implements NestMiddleware {
     const token = req.headers['auth-user'] as string;
     console.log('TOKEN:', token);
     console.log('REQ USER:', req['user']);
-    
+
     if (!token) {
       return res.status(401).json({ message: 'Token is missing' });
     }
 
     try {
-      const decoded = jwt.verify(token, 'my-256-bit-secret-key-to-sign-the-token') as { userId: string }; // à adapter avec ta vraie clé
+      const decoded = jwt.verify(
+        token,
+        'my-256-bit-secret-key-to-sign-the-token',
+      ) as { userId: string };
       if (!decoded.userId) {
         return res.status(403).json({ message: 'Invalid token payload' });
       }
-      req['user'] = { id: decoded['userId'] }; 
+      req['user'] = { id: decoded['userId'] };
       next();
     } catch (err) {
       return res.status(403).json({ message: 'Token is invalid' });

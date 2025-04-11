@@ -1,10 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseInterceptors,
+  UploadedFile,
+  Res,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import path, { extname } from 'path';
 import { CvService } from './cv.service';
 import { CreateCvDto } from './dto/create-cv.dto';
 import { UpdateCvDto } from './dto/update-cv.dto';
 import { FiltreCvDto } from './dto/filtre-cv.dto';
-import { Cv } from './entities/cv.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Response } from 'express';
+import * as fs from 'fs';
+import { Put } from '@nestjs/common';
 
 @Controller('cv')
 export class CvController {
@@ -15,12 +32,10 @@ export class CvController {
     return this.cvService.create(createCvDto);
   }
 
-
-  
   @Get()
   async findAll(
     @Query() filter: FiltreCvDto,
-    @Query() pagination: PaginationDto
+    @Query() pagination: PaginationDto,
   ) {
     if (filter.critere || filter.age !== undefined) {
       // Return filtered results WITHOUT pagination
@@ -42,5 +57,35 @@ export class CvController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.cvService.remove(+id);
+  }
+  @Post(':id/upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/cv-images',
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now();
+          const ext = extname(file.originalname);
+          callback(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+      fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+          return callback(new Error('Only Images are allowed'), false);
+        }
+        callback(null, true);
+      },
+    }),
+  )
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      return { message: 'Aucune image uploadée.' };
+    }
+    const imagePath = file.path;
+    await this.cvService.updateImage(+id, imagePath);
+    return { message: 'Image uploadée avec succès.', path: imagePath };
   }
 }

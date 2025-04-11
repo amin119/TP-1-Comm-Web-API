@@ -1,4 +1,11 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Skill } from '../../skill/entities/skill.entity';
 
@@ -22,14 +29,13 @@ export class Cv {
   @Column()
   job: string;
 
-  @Column()
+  @Column({ nullable: true })
   path: string;
 
-  @ManyToOne(() => User, user => user.cvs)
+  @ManyToOne(() => User, (user) => user.cvs)
   user: User;
 
   @ManyToMany(() => Skill)
   @JoinTable()
   skills: Skill[];
 }
-
