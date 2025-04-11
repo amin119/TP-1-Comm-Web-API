@@ -1,12 +1,14 @@
-import { Injectable, ConflictException,UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException,UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
-
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UserService) {}
+  constructor(private usersService: UserService,
+    private readonly jwtService: JwtService
+  ) {}
 
   async register(dto: RegisterDto) {
     const userExists = await this.usersService.findByUsernameOrEmail(dto.username, dto.email);
@@ -30,14 +32,25 @@ export class AuthService {
       return result;
   }
 
-  async login(dto: LoginDto) {
-    const user = await this.usersService.findByUsername(dto.username);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+  async login(credentials: LoginDto) {
+    const { username, password } = credentials;
 
-    const isValid = await bcrypt.compare(dto.password, user.password);
+    const user = await this.usersService.findByUsername(credentials.username);
+    if (!user) throw new NotFoundException('Invalid credentials');
+
+    const isValid = await bcrypt.compare(credentials.password, user.password);
     if (!isValid) throw new UnauthorizedException('Invalid credentials');
 
-    const { password, ...result } = user;
-    return result;
+    const payload = { 
+        sub: user.id,  
+        username: user.username,
+        email: user.email,
+        role: user.role};
+
+    const jwt = await this.jwtService.sign(payload)
+
+   return {
+    "access_token": jwt
+   };
   }
 }

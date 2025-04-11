@@ -11,11 +11,15 @@ import { Skill } from './skill/entities/skill.entity';
 import { User } from './user/entities/user.entity';
 import { Cv } from './cv/entities/cv.entity';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 dotenv.config();
+
 
 @Module({
   imports: [
-    UserModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     CvModule,
     SkillModule,
     TypeOrmModule.forRoot({
@@ -30,9 +34,8 @@ dotenv.config();
       dropSchema: false,
     }),
     AuthModule,
-    CvModule,
     UserModule,
-    SkillModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService],

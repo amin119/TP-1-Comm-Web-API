@@ -44,6 +44,11 @@ Install the following useful packages:
 npm install @ngneat/falso jsonwebtoken @nestjs/platform-express multer
 npm install -D @types/jsonwebtoken
 npm install class-validator
+npm install @nestjs/passport passport passport-local
+npm install @nestjs/jwt passport-jwt
+npm install --save-dev @types/passport-jwt
+npm install @nestjs/config
+
 ```
 
 ## Environment Variables
