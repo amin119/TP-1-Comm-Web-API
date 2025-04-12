@@ -16,7 +16,7 @@ export class AuthMiddleware implements NestMiddleware {
     try {
       const decoded = jwt.verify(
         token,
-        'my-256-bit-secret-key-to-sign-the-token',
+        'mysecret',
       ) as { userId: string };
       if (!decoded.userId) {
         return res.status(403).json({ message: 'Invalid token payload' });

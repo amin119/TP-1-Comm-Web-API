@@ -10,7 +10,8 @@ import {
 import { SkillService } from './skill.service';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
-
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 @Controller('skill')
 export class SkillController {
   constructor(private readonly skillService: SkillService) {}
@@ -21,6 +22,7 @@ export class SkillController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.skillService.findAll();
   }

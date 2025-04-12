@@ -22,28 +22,44 @@ export class CvControllerV2 {
     return this.cvService.findAllv2();
   }
 
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.cvService.findOnev2(+id);
   }
 
   @Post()
+
   create(@Body() createCvDto: CreateCvDto, @Req() req: Request) {
-    if (!req['user'] || !req['user'].id) {
+    const user = req.user as { id: number };
+    if (!user?.id) {
       throw new UnauthorizedException('User not authenticated');
     }
-    console.log('REQ USER:', req['user']);
-    return this.cvService.createv2(createCvDto, req['user']);
+    return this.cvService.createv2(createCvDto, user);
   }
-
+  
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateCvDto, @Req() req: Request) {
-    console.log('REQ USER:', req['user']);
-    return this.cvService.updatev2(+id, updateCvDto, +req['user'].id);
-  }
+    update(@Param('id') id: string, @Body() updateCvDto, @Req() req: Request) {
+      const userId = (req['user'] as { id: number }).id;
+    
+      if (!userId) {
+        throw new UnauthorizedException('User not authenticated');
+      }
+    
+      console.log('REQ USER:', req['user']);
+      return this.cvService.updatev2(+id, updateCvDto, userId);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string, @Req() req: Request) {
-    return this.cvService.removev2(+id, req['user'].id);
-  }
+    @Delete(':id')
+    remove(@Param('id') id: string, @Req() req: Request) {
+      const userId = (req['user'] as { id: number }).id;
+    
+      if (!userId) {
+        throw new UnauthorizedException('User not authenticated');
+      }
+    
+      console.log('REQ USER:', req['user']);
+      return this.cvService.removev2(+id, userId.toString());
+    }
+    
 }
