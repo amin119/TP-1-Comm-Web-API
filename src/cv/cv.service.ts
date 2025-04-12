@@ -190,8 +190,17 @@ export class CvService {
     cv.path = fileName;
     return this.cvRepository.save(cv);
   }
-  async findAllv2() {
-    return await this.cvRepository.find();
+  async findAllv2(user) {
+    if (user.role == 'admin') {
+      return await this.cvRepository.find();
+    }
+    return await this.cvRepository.find({
+      where: {
+        user: {
+          id: user.userId,
+        },
+      },
+    });
   }
 
   async findOnev2(id: number) {

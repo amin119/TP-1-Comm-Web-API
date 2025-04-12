@@ -17,9 +17,9 @@ import { join } from 'path';
 =======
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
->>>>>>> origin/feature/auth-module
+import { JwtModule } from '@nestjs/jwt';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 dotenv.config();
-
 
 @Module({
   imports: [
@@ -47,11 +47,9 @@ dotenv.config();
 =======
     AuthModule,
     UserModule,
-    
->>>>>>> origin/feature/auth-module
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtAuthGuard],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
